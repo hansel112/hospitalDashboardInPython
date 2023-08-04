@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register Page</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        p{
+            text-align: center;
+            padding: 10px;
+        }
+        .info{
+            color: blue;
+        }
+        .error{
+            color: red;
+        }
+        input{
+            width: 100%;
+            padding: 10px 10px;
+            border-radius: 5px;
+            border: none;
+            border: 1px solid grey;
+            outline: none;
+            margin: 5px 0;
+        }
+        button{
+            width: 100%;
+            padding: 10px 20px;
+            background: darkblue;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            border: 2px solid grey;
+        }
+        form{
+            width: 30%;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        form h1{
+            text-align: center;
+            padding: 10px 0;
+        }
+        form div{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-gap: 10px;
+            text-align: center;
+        }
+        a{
+            text-decoration: none;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <form action="." method="post">{% csrf_token %}
+        <h1>PATIENT REGISTER</h1>
+        {% for message in messages %}
+            {% if message.tags %}
+            <p class="{{message.tags}}">{{message}}</p>
+            {% endif %}
+        {% endfor %}
+        <div>
+            <input type="text" placeholder="enter your firstname" name="fname">
+            <input type="text" placeholder="enter your last name" name="lname">
+        </div>
+        <input type="uname" onchange="checkUser(this)" placeholder="enter your username" name="uname">
+        <small id="message"></small>
+        <input type="email" placeholder="valid email address" name="email">
+        <input type="password" placeholder="enter your password" name="pword">
+        <input type="text" placeholder="patient-id" name="pid">
+        <input type="text" placeholder="patient location" name="loc">
+        <button>Register</button>
+    </form>
+    <script>
+        function checkUser(e){
+            let username = e.value;
+            fetch(`/register/?username=${username}`, {
+                method: 'GET',
+              })
+            .then((response) => response.json())
+            .then((result) => {
+                console.log('Success:', result);
+                document.getElementById("message").textContent = result['message'];
+                if(result['message'] .includes('taken up')){
+                    document.getElementById("message").style.color = "red";
+                }else{
+                    document.getElementById("message").style.color = "green";
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+{% extends 'dashboard.html' %}
+{% block header %}
+    {{ block.super }}
+{% endblock %}
+{% block content %}
+<style>
+*{
+    box-sizing: border-box;
+}
+p{
+    text-align: center;
+    padding: 10px;
+}
+.info{
+    color: blue;
+}
+.error{
+    color: red;
+}
+input{
+    width: 100%;
+    padding: 10px 10px;
+    border-radius: 5px;
+    border: none;
+    border: 1px solid grey;
+    outline: none;
+    margin: 5px 0;
+}
+button{
+    width: 100%;
+    padding: 10px 20px;
+    background: darkblue;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    border: 2px solid grey;
+}
+#form{
+    width: 40%;
+    margin: auto;
+    display: block;
+}
+#form h1{
+    text-align: center;
+    padding: 10px 0;
+}
+#form div{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 10px;
+}
+a{
+    text-decoration: none;
+    padding: 5px 0;
+}
+</style>
+<form id="form" action="". method="post">{% csrf_token %}
+    <h1>User Information</h1>
+    {% for message in messages %}
+        {% if message.tags %}
+        <p class="{{message.tags}}">{{message}}</p>
+        {% endif %}
+    {% endfor %}
+    <div>
+        <input type="text" placeholder="enter your firstname" name="fname" value="{{current_user.user.first_name}}">
+        <input type="text" placeholder="enter your last name" name="lname" value="{{current_user.user.last_name}}">
+    </div>
+    <input type="uname" readonly onchange="checkUser(this)" placeholder="enter your username" value="{{current_user.user.username}}" name="uname">
+    <small id="message"></small>
+    <input type="email" placeholder="valid email address" value="{{current_user.user.email}}" name="email">
+    <input type="text" placeholder="patient-id" value="{{current_user.patient_id}}" name="pid">
+    <input type="text" placeholder="patient location" value="{{current_user.location}}" name="loc">
+    <button>Update User Information</button>
+</form>
+{% endblock %}

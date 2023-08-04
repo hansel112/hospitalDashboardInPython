@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>International Hospitals Dashboard</title>
+    <script src="https://kit.fontawesome.com/04c94e0a30.js" crossorigin="anonymous"></script>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        header {
+            padding: 20px;
+            text-align: center;
+            background: blue;
+            color: whitesmoke;
+            display: grid;
+            grid-template-columns: 0.8fr 0.2fr;
+        }
+        header h1{
+            font-size: 3rem;
+        } 
+
+        .profilepic {
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #2196F3;
+        }
+        header img{
+            width: auto;
+            height: 100%;
+            margin-left: -50px;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .dropdown-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            right: 0;
+            min-width: 150px;
+            background-color: white;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            padding: 12px 16px;
+            z-index: 1;
+            text-align: left;
+        }
+        .dropdown-menu a {
+            color: black;
+            text-decoration: none;
+            display: block;
+            font-size: 1.5rem;
+            padding: 5px 10px;
+        }
+        .dropdown-menu a:hover{
+            background: blue;
+            color: white;
+        }
+        .dropdown:hover .dropdown-menu {
+            display: block;
+        }
+        form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        button[type="submit"] {
+            padding: 10px 20px;
+            background-color: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+            padding: 20px 5%;
+            justify-content: center;
+            align-items: center;
+        }
+        .box {
+            background-color: #FFFFFF;
+            height: 500px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        }
+        .header {
+            background-color: blue;
+            color: white;
+            padding: 10px;
+            font-size: 20px;
+            text-align: center;
+            border-top-left-radius: 5px;
+            border-top-right-radius: 5px;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content p {
+            -size: 16px;
+        }
+        .box a{
+            text-decoration: none;
+            color: blue;
+        }
+        .actions{
+            display: flex;
+            justify-content: flex-end;
+            gap: 20px;
+            padding: 0 5%;
+
+        }
+        .actions select{
+            padding: 10px 20px;
+            border-radius: 5px;
+            outline: none;
+        }
+        .paginator a{
+            padding: 10px 30px;
+            border: 1px solid black;
+            margin: 10px;
+            color: black;
+            border-radius: 20px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+      <h1>International Hospitals Dashboard</h1>
+      <div class="profile dropdown">
+        <div class="profilepic">
+            <img src="user.bmp" alt="profile picture" class="profilepic">
+        </div>
+        <div class="dropdown">
+          <button class="dropdown-toggle">
+            <i class="fa fa-caret-down"></i>
+          </button>
+          <div class="dropdown-menu">
+            <a href="{% url 'profile' %}">Profile</a>
+            <a href="{% url 'homepage' %}">HomePage</a>
+            <a href="{% url 'password_change' %}">change password</a>
+            <a href="{% url 'logout' %}">Logout</a>
+          </div>
+        </div>
+      </div>
+    </header>
+   <br>
+
+    <form action="" id ="filter" method="get"></form>
+    <form action="" id="search" method="get"></form>
+    <div class="actions">
+        <div>
+            <label>Services</label>
+            <select form="filter" name="service">
+                {% for x in services %}
+                <option value="{{x.name}}">{{x.name}}</option>
+                {% endfor %}
+            </select>
+            <label>Location</label>
+            <select name="location" form="filter">
+                {% for x in locations %}
+                <option value="{{x.location}}">{{x.location}}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" form="filter">Filter</button>
+        </div>
+        <div>
+            <input type="text" form ="search" name="search" placeholder="Search Services...">
+            <button type="submit" form="search">Go</button>
+        </div>
+    </div>
+    <div class="container">
+        {% for hospital in hospitals %}
+        <div class="box">
+            <div class="header">
+                <h2>{{hospital.name}}</h2>
+            </div>
+            <div class="content">
+                {% for x in hospital.services.all %}
+                <p>>>{{x}}</p>
+                {% endfor %}
+                <h2>Location: {{hospital.location}}</h2>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div style="background:blue;display: flex; justify-content:center;font-size:20px;align-items:center;">
+        {% if hospitals.has_previous %}
+        <a href="/dashboard/?page={{hospitals.previous_page_number}}"style="color:white;text-decoration:none;">Previous Page</a>
+        {% endif %}
+        <p style="color: azure;">{{hospitals}}</p>
+        {% if hospitals.has_next %}
+        <a href="/dashboard/?page={{hospitals.next_page_number}}"style="color:white;text-decoration:none;">Next Page</a>
+        {% endif %}
+    </div>
+</body>
+</html>
